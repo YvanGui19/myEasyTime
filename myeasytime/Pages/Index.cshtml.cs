@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using myeasytime.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +12,18 @@ namespace myeasytime.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly myeasytime.Data.DataContext _context;
         private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(myeasytime.Data.DataContext context, ILogger<IndexModel> logger)
         {
+            _context = context;
             _logger = logger;
         }
 
+        public IList<Conge> Conge { get; set; }
         public DateTime[] Days { get; private set; }
+     
 
         [BindProperty]
         public string SelectedDate { get; set; }
@@ -32,10 +38,11 @@ namespace myeasytime.Pages
         public string LeaveType { get; set; }
 
         public string DateOfNow { get; set; }
-        //public List<DateTime> Days { get; set; }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
+            Conge = await _context.Conges.ToListAsync();
+
             var now = DateTime.Now;
             var firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
             var daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);

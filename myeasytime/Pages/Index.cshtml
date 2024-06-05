@@ -7,9 +7,9 @@
 <div class="text-center">
     <div>
         <div class="btn-group">
-            <button class="btn btnPreNex">Previous</button>
-            <button class="btn btnToday">Today</button>
-            <button class="btn btnPreNex">Next</button>
+            <button id="btnPrevious" class="btn btnPreNex">Previous</button>
+            <button id="btnToday" class="btn btnToday">Today</button>
+            <button id="btnNext" class="btn btnPreNex">Next</button>
         </div>
         <div>
             <h1>@Model.DateOfNow</h1>
@@ -45,12 +45,13 @@
                                 if (day.Month == DateTime.Now.Month)
                                 {
                                     <td><a href="javascript:void(0)" onclick="openForm('@day.ToShortDateString()')">@day.Day</a></td>
+                                    day = day.AddDays(1);
                                 }
                                 else
                                 {
-                                    break;
+                                    <td></td>
                                 }
-                                day = day.AddDays(1);
+                                
                             }
                         }
                     </tr>
@@ -65,14 +66,15 @@
     <div id="formModal" style="display:none;">
         <form method="post" asp-page-handler="Submit">
             <input type="hidden" id="selectedDate" name="SelectedDate" />
-            <label>Date de début: <input type="date" name="StartDate" /></label><br />
-            <label>Date de fin: <input type="date" name="EndDate" /></label><br />
+            <label>Date de début : <input type="date" name="StartDate" /></label><br />
+            <label>Date de fin : <input type="date" name="EndDate" /></label><br />
             <label>
-                Type de congé:
+                Type de congé :
                 <select name="LeaveType">
-                    <option value="Paid">Payé</option>
-                    <option value="Unpaid">Non payé</option>
-                    <option value="Sick">Maladie</option>
+                    @foreach (var conge in Model.Conge)
+                    {
+                        <option value="@conge.type">@conge.type</option>
+                    }
                 </select>
             </label><br />
             <button type="submit">Soumettre</button>
