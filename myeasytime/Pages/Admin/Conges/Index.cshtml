@@ -1,0 +1,48 @@
+﻿@page
+@model myeasytime.Pages.Admin.Conges.IndexModel
+
+@{
+    ViewData["Title"] = "Type of leave";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-page="Create">Create a new type of leave</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Conge[0].type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Conge[0].namewbs)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Conge[0].wbs)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Conge) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.namewbs)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.wbs)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.CongeID">Edit</a> |
+                    <!--<a asp-page="./Details" asp-route-id="@item.CongeID">Details</a>-->
+                <a asp-page="./Delete" asp-route-id="@item.CongeID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

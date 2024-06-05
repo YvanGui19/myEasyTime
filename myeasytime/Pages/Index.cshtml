@@ -1,0 +1,96 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <div>
+        <div class="btn-group">
+            <button class="btn btnPreNex">Previous</button>
+            <button class="btn btnToday">Today</button>
+            <button class="btn btnPreNex">Next</button>
+        </div>
+        <div>
+            <h1>@Model.DateOfNow</h1>
+        </div>
+    </div>
+    <div>
+        <table>
+            <tr>
+                <th>Sunday</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+            </tr>
+            @{
+                var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                var dayOfWeek = (int)firstDayOfMonth.DayOfWeek;
+                var day = firstDayOfMonth;
+
+                for (int week = 0; week < 6; week++)
+                {
+                    <tr>
+                        @for (int i = 0; i < 7; i++)
+                        {
+                            if (week == 0 && i < dayOfWeek)
+                            {
+                                <td></td>
+                            }
+                            else
+                            {
+                                if (day.Month == DateTime.Now.Month)
+                                {
+                                    <td><a href="javascript:void(0)" onclick="openForm('@day.ToShortDateString()')">@day.Day</a></td>
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                                day = day.AddDays(1);
+                            }
+                        }
+                    </tr>
+                    if (day.Month != DateTime.Now.Month)
+                    {
+                        break;
+                    }
+                }
+            }
+        </table>
+    </div>
+    <div id="formModal" style="display:none;">
+        <form method="post" asp-page-handler="Submit">
+            <input type="hidden" id="selectedDate" name="SelectedDate" />
+            <label>Date de début: <input type="date" name="StartDate" /></label><br />
+            <label>Date de fin: <input type="date" name="EndDate" /></label><br />
+            <label>
+                Type de congé:
+                <select name="LeaveType">
+                    <option value="Paid">Payé</option>
+                    <option value="Unpaid">Non payé</option>
+                    <option value="Sick">Maladie</option>
+                </select>
+            </label><br />
+            <button type="submit">Soumettre</button>
+            <button type="button" onclick="closeForm()">Annuler</button>
+        </form>
+    </div>
+
+    @section Scripts {
+        <script>
+            function openForm(date) {
+                document.getElementById('selectedDate').value = date;
+                document.getElementById('formModal').style.display = 'block';
+            }
+
+            function closeForm() {
+                document.getElementById('formModal').style.display = 'none';
+            }
+        </script>
+    }
+
+</div>
