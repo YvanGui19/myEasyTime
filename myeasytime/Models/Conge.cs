@@ -5,10 +5,6 @@ namespace myeasytime.Models
 {
     public class Conge
     {
-        /*public DateTime startdate { get; set; }
-        public DateTime endate { get; set; }
-        public bool halfday { get; set; }
-        public int nbday { get; set; }*/
         public int CongeID { get; set; }
 
         [Display(Name = "Type")]

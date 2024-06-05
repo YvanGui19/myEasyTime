@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using myeasytime.Models;
+using System;
 
 namespace myeasytime.Data
 {
@@ -9,5 +10,8 @@ namespace myeasytime.Data
         {
         }
         public DbSet<Conge> Conges { get; set; }
+
+        public DbSet<DemandeConge> DemandesConges { get; set; }
     }
+
 }

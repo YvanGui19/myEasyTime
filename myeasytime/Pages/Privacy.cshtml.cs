@@ -20,13 +20,5 @@ namespace myeasytime.Pages
             _logger = logger;
             this.dataContext = dataContext;
         }
-
-        public void OnGet()
-        {
-            //Test accès BD
-            /*var conge = new Conge() { type = "CongeTest", namewbs = "VacTest", wbs = "007ATR" };
-            dataContext.Conges.Add(conge);
-            dataContext.SaveChanges();*/
-        }
     }
 }
