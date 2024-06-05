@@ -5,16 +5,19 @@
 }
 
 <div class="text-center">
-    <div>
+    <div> <!-- -->
+        <!-- Boutons de navigation pour le mois à afficher -->
         <div class="btn-group">
             <button id="btnPrevious" class="btn btnPreNex">Previous</button>
             <button id="btnToday" class="btn btnToday">Today</button>
             <button id="btnNext" class="btn btnPreNex">Next</button>
         </div>
         <div>
+            <!--Affiche le mois et l'année sélectionné-->
             <h1>@Model.DateOfNow</h1>
         </div>
     </div>
+    <!--Calendrier-->
     <div>
         <table>
             <tr>
@@ -26,6 +29,7 @@
                 <th>Friday</th>
                 <th>Saturday</th>
             </tr>
+            <!-- Génération dynamique des jours du mois sélectionné -->
             @{
                 var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                 var dayOfWeek = (int)firstDayOfMonth.DayOfWeek;
@@ -63,36 +67,70 @@
             }
         </table>
     </div>
+    <!--Formulaire pour créer une demande de congé-->
     <div id="formModal" style="display:none;">
-        <form method="post" asp-page-handler="Submit">
+        <form id="leaveForm" method="post" asp-page-handler="Submit" onsubmit="confirmationEnvoi">
             <input type="hidden" id="selectedDate" name="SelectedDate" />
             <label>Date de début : <input type="date" name="StartDate" /></label><br />
             <label>Date de fin : <input type="date" name="EndDate" /></label><br />
             <label>
                 Type de congé :
                 <select name="LeaveType">
+                    <!--Génération automatique depuis la BD des types de congé-->
                     @foreach (var conge in Model.Conge)
                     {
                         <option value="@conge.type">@conge.type</option>
                     }
                 </select>
             </label><br />
-            <button type="submit">Soumettre</button>
-            <button type="button" onclick="closeForm()">Annuler</button>
+            <!--Bouton submit et cancel-->
+            <button type="submit" onclick="submitForm(event)">Submit</button>
+            <button type="button" onclick="closeForm()">Cancel</button>
         </form>
     </div>
 
     @section Scripts {
         <script>
+            //Affiche le formulaire
             function openForm(date) {
                 document.getElementById('selectedDate').value = date;
                 document.getElementById('formModal').style.display = 'block';
             }
 
+            //Ferme le formulaire
             function closeForm() {
                 document.getElementById('formModal').style.display = 'none';
             }
+
+            //Contrôle du formulaire
+            function submitForm(event) {
+                var startDate = document.getElementsByName("StartDate")[0].value;
+                var endDate = document.getElementsByName("EndDate")[0].value;
+
+                //Si les champs Start ou End Date sont vide affiche une alert
+                if (!startDate || !endDate) {
+                    alert("Les champs de date de début et de date de fin ne peuvent pas être vides.");
+                    event.preventDefault(); // Empêche l'envoi du formulaire
+                    return false;
+                }
+
+                //Demande la confirmation d'envoi à la DB
+                if (!confirm("Êtes-vous sûr de vouloir soumettre ce formulaire ?")) {
+                    event.preventDefault(); // Empêche l'envoi du formulaire si l'utilisateur annule la confirmation
+                    return false;
+                }
+            }
+
+            //Affiche la confirmation d'envoi
+            function confirmationEnvoi() {
+                alert("Les données ont été envoyées avec succès à la base de données.");
+            }
         </script>
+    }
+    <!--Affiche la confirmation d'envoi par exemple même après l'actualisation de la page-->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>alert("@TempData["SuccessMessage"]");</script>
     }
 
 </div>

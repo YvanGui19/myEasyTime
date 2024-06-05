@@ -85,7 +85,10 @@ namespace myeasytime.Pages
 
             _logger.LogInformation("Nouveau congé enregistré avec succès : {StartDate} à {EndDate}, Type : {LeaveType}", StartDate, EndDate, LeaveType);
 
+            TempData["SuccessMessage"] = "Les données ont été envoyées avec succès à la base de données.";
+
             return RedirectToPage("./Index");
+
         }
 
         private string ConvertDateToISO8601(DateTime date)
