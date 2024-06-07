@@ -1,0 +1,164 @@
+﻿
+/*pour l'image du logo*/
+img.info {
+    display: block;
+    max-height: 40px;
+}
+
+.head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px; 
+}
+
+.btn {
+    font-family: Helvetica;
+    font-size: 16px;
+    border-radius: .25rem;
+    padding: 6px 12px;
+    max-height: 40px;
+}
+
+    .btn:focus {
+        outline: 2px solid black;
+        box-shadow: none;
+    }
+
+.btnPreNex {
+    color: white;
+    background-color: #0070D2;
+}
+
+    .btnPreNex:hover {
+        text-decoration: underline;
+        color: white;
+    }
+
+.btnToday {
+    color: #6C757D;
+    background-color: white;
+    border: 1px solid #6C757D;
+}
+
+    .btnToday:hover {
+        text-decoration: underline;
+        background-color: #6C757D;
+        color: white;
+    }
+
+.user table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.user td {
+    border: 1px solid black;
+}
+
+td, th {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+th {
+    height: auto;
+}
+
+td {
+    height: 75px;
+}
+
+    td.current_month {
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        td.current_month:hover, th.current_month:hover {
+            background-color: #f2F2F2;
+        }
+
+    td.other_month {
+        color: #BFBDBA;
+        cursor: default;
+    }
+
+.current-day div {
+    background-color: green;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    margin: auto;
+}
+
+/* Le formulaire */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    position: relative;
+}
+
+/* Le bouton fermer */
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    height: auto;
+    text-align: right;
+    padding: 0px 20px 0px 0px;
+    margin: 0px;
+    line-height: 1;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+    .close-button:hover,
+    .close-button:focus {
+        color: red;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+#btnSubmit {
+    color: white;
+    background-color: #0070D2;
+}
+    #btnSubmit:hover {
+        text-decoration: underline;
+        color: white;
+    }
+
+#btnCancel {
+    color: #6C757D;
+    background-color: white;
+    border: 1px solid #6C757D;
+}
+    #btnCancel:hover {
+        text-decoration: underline;
+        background-color: #6C757D;
+        color: white;
+    }

@@ -4,17 +4,17 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <div> <!-- -->
+<div class="text-center user">
+    <div class="head">
+        <div>
+            <!--Affiche le mois et l'année sélectionné en mettant la première lettre du mois en maj-->
+            <h1>@(char.ToUpper(Model.DateOfNow[0]) + Model.DateOfNow.Substring(1))</h1>
+        </div>
         <!-- Boutons de navigation pour le mois à afficher -->
         <div class="btn-group">
-            <button id="btnPrevious" class="btn btnPreNex">Previous</button>
-            <button id="btnToday" class="btn btnToday">Today</button>
-            <button id="btnNext" class="btn btnPreNex">Next</button>
-        </div>
-        <div>
-            <!--Affiche le mois et l'année sélectionné-->
-            <h1>@Model.DateOfNow</h1>
+            <button id="btnPrevious" class="btn btnPreNex" onclick="location.href='?monthOffset=@(Model.MonthOffset-1)'">Previous</button>
+            <button id="btnToday" class="btn btnToday" onclick="location.href='?monthOffset=0'">Today</button>
+            <button id="btnNext" class="btn btnPreNex" onclick="location.href='?monthOffset=@(Model.MonthOffset+1)'">Next</button>
         </div>
     </div>
     <!--Calendrier-->
@@ -29,37 +29,34 @@
                 <th>Friday</th>
                 <th>Saturday</th>
             </tr>
-            <!-- Génération dynamique des jours du mois sélectionné -->
             @{
-                var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                var firstDayOfMonth = new DateTime(Model.CurrentMonth.Year, Model.CurrentMonth.Month, 1);
                 var dayOfWeek = (int)firstDayOfMonth.DayOfWeek;
-                var day = firstDayOfMonth;
+                var day = firstDayOfMonth.AddDays(-dayOfWeek); // Commencé le calendrier avec le mois précédent
 
                 for (int week = 0; week < 6; week++)
                 {
                     <tr>
                         @for (int i = 0; i < 7; i++)
                         {
-                            if (week == 0 && i < dayOfWeek)
+                            var cssClass = day.Month == Model.CurrentMonth.Month ? "current-month" : "other-month";
+                            if (day.Date == DateTime.Today)
                             {
-                                <td></td>
+                                cssClass += " current-day";
+                            }
+
+                            if (day.Month == Model.CurrentMonth.Month)
+                            {
+                                <td class="current_month @cssClass" onclick="openForm('@day.ToShortDateString()')"><div>@day.Day</div></td>
                             }
                             else
                             {
-                                if (day.Month == DateTime.Now.Month)
-                                {
-                                    <td><a href="javascript:void(0)" onclick="openForm('@day.ToShortDateString()')">@day.Day</a></td>
-                                    day = day.AddDays(1);
-                                }
-                                else
-                                {
-                                    <td></td>
-                                }
-                                
+                                <td class="other_month @cssClass"><div>@day.Day</div></td>
                             }
+                            day = day.AddDays(1);
                         }
                     </tr>
-                    if (day.Month != DateTime.Now.Month)
+                    if (day.Month != Model.CurrentMonth.Month && week >= 4)
                     {
                         break;
                     }
@@ -67,26 +64,31 @@
             }
         </table>
     </div>
+
     <!--Formulaire pour créer une demande de congé-->
-    <div id="formModal" style="display:none;">
-        <form id="leaveForm" method="post" asp-page-handler="Submit" onsubmit="confirmationEnvoi">
-            <input type="hidden" id="selectedDate" name="SelectedDate" />
-            <label>Date de début : <input type="date" name="StartDate" /></label><br />
-            <label>Date de fin : <input type="date" name="EndDate" /></label><br />
-            <label>
-                Type de congé :
-                <select name="LeaveType">
-                    <!--Génération automatique depuis la BD des types de congé-->
-                    @foreach (var conge in Model.Conge)
-                    {
-                        <option value="@conge.type">@conge.type</option>
-                    }
-                </select>
-            </label><br />
-            <!--Bouton submit et cancel-->
-            <button type="submit" onclick="submitForm(event)">Submit</button>
-            <button type="button" onclick="closeForm()">Cancel</button>
-        </form>
+    <div id="formModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <form id="leaveForm" method="post" asp-page-handler="Submit" onsubmit="confirmationEnvoi">
+                <input type="hidden" id="selectedDate" name="SelectedDate" />
+                <label>Date de début : <input type="date" name="StartDate" /></label><br />
+                <label>Date de fin : <input type="date" name="EndDate" /></label><br />
+                <label>
+                    Type de congé :
+                    <select name="LeaveType">
+                        <!--Génération automatique depuis la BD des types de congé-->
+                        @foreach (var conge in Model.Conge)
+                        {
+                            <option value="@conge.type">@conge.type</option>
+                        }
+                    </select>
+                </label><br />
+                <!--Bouton submit et cancel-->
+                <button id="btnCancel" class="btn" type="button" onclick="closeForm()">Cancel</button>
+                <button id="btnSubmit" class="btn" type="submit" onclick="submitForm(event)">Submit</button>
+                
+            </form>
+        </div>
     </div>
 
     @section Scripts {
@@ -100,6 +102,22 @@
             //Ferme le formulaire
             function closeForm() {
                 document.getElementById('formModal').style.display = 'none';
+            }
+
+            // Obtenez le bouton fermer
+            var closeButton = document.getElementsByClassName("close-button")[0];
+
+            // Lorsque l'utilisateur clique sur le bouton fermer, fermez la fenêtre modale
+            closeButton.onclick = function () {
+                closeForm();
+            }
+
+            // Lorsque l'utilisateur clique en dehors de la fenêtre modale, fermez-la
+            window.onclick = function (event) {
+                var formModal = document.getElementById('formModal');
+                if (event.target == formModal) {
+                    closeForm();
+                }
             }
 
             //Contrôle du formulaire
@@ -125,6 +143,7 @@
             function confirmationEnvoi() {
                 alert("Les données ont été envoyées avec succès à la base de données.");
             }
+
         </script>
     }
     <!--Affiche la confirmation d'envoi par exemple même après l'actualisation de la page-->

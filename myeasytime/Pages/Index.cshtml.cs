@@ -12,22 +12,22 @@ using System.Threading.Tasks;
 
 namespace myeasytime.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : PageModel //...
     {
-        private readonly myeasytime.Data.DataContext _context;
-        private readonly ILogger<IndexModel> _logger;
+        private readonly myeasytime.Data.DataContext _context; //pour accéder à la base de données
+        private readonly ILogger<IndexModel> _logger; //pour enregistrer les messages de journalisation
 
-        public IndexModel(myeasytime.Data.DataContext context, ILogger<IndexModel> logger)
+        public IndexModel(myeasytime.Data.DataContext context, ILogger<IndexModel> logger) // constructeur de la classe IndexModel
         {
-            _context = context;
-            _logger = logger;
+            _context = context; //initialise _context
+            _logger = logger; //initialise _logger
         }
 
-        public IList<Conge> Conge { get; set; }
-        public DateTime[] Days { get; private set; }
+        public IList<Conge> Conge { get; set; } //déclaration de la propriété Conge qui est une liste de congés
+        public DateTime[] Days { get; private set; } //déclaration de la propriété Days qui est un tableau de dates
      
 
-        [BindProperty]
+        [BindProperty] //les propriétés avec les BindProperty sont les déclarations des propriétés qui sont liées aux données du formulaire
         public string SelectedDate { get; set; }
 
         [BindProperty]
@@ -39,13 +39,18 @@ namespace myeasytime.Pages
         [BindProperty]
         public string LeaveType { get; set; }
 
-        public string DateOfNow { get; set; }
+        public string DateOfNow { get; set; } //déclaration de la propriété DateOfNow qui contiendra la date actuelle
 
-        public async Task OnGetAsync()
+        public int MonthOffset { get; set; }
+        public DateTime CurrentMonth { get; set; }
+
+        public async Task OnGetAsync(int monthOffset = 0) //méthode qui :
         {
-            Conge = await _context.Conges.ToListAsync();
+            MonthOffset = monthOffset;
+            CurrentMonth = DateTime.Now.AddMonths(monthOffset);
+            Conge = await _context.Conges.ToListAsync(); //récupère la liste des types de congé de la DB
 
-            var now = DateTime.Now;
+            var now = CurrentMonth; //calcule les dates de tous les jours du mois courant
             var firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
             var daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
             Days = new DateTime[daysInMonth];
@@ -54,34 +59,33 @@ namespace myeasytime.Pages
                 Days[i] = firstDayOfMonth.AddDays(i);
             }
 
-            DateOfNow = now.ToString("MMMM yyyy");
+            DateOfNow = now.ToString("MMMM yyyy"); //stock la date actuelle
         }
 
-        public async Task<IActionResult> OnPostSubmit()
+        public async Task<IActionResult> OnPostSubmit() //méthode de vérification du formulaire
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            string isoStartDate = ConvertDateToISO8601(this.StartDate);
+            string isoStartDate = ConvertDateToISO8601(this.StartDate); //convertit les champs date en format lisible et réutilisable pour et par la DB
             string isoEndDate = ConvertDateToISO8601(this.EndDate);
 
-            if (isoStartDate == null || isoEndDate == null)
+            if (isoStartDate == null || isoEndDate == null) //vérifie que les champs date soient remplit
             {
-                // Gérer l'erreur de conversion ici
                 return Page();
             }
 
-            var demandeconge = new DemandeConge
+            var demandeconge = new DemandeConge //crée une nouvelle demande de congé dans la DB
             {
                 StartDate = this.StartDate,
                 EndDate = this.EndDate,
                 LeaveType = this.LeaveType
             };
 
-            _context.DemandesConges.Add(demandeconge);
-            await _context.SaveChangesAsync();
+            _context.DemandesConges.Add(demandeconge); //ajout de la nouvelle demande de congé à la DB
+            await _context.SaveChangesAsync();//enregistre les modifs
 
             _logger.LogInformation("Nouveau congé enregistré avec succès : {StartDate} à {EndDate}, Type : {LeaveType}", StartDate, EndDate, LeaveType);
 
@@ -91,7 +95,7 @@ namespace myeasytime.Pages
 
         }
 
-        private string ConvertDateToISO8601(DateTime date)
+        private string ConvertDateToISO8601(DateTime date) //méthode de convertion de la date au format de la DB
         {
             return date.ToString("yyyy-MM-dd");
         }

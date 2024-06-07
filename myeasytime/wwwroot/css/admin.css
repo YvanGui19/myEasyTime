@@ -7,53 +7,6 @@ a.navbar-brand {
   word-break: break-all;
 }
 
-/*--------------- Mes essais ---------------*/
-
-/*pour l'image du logo*/
-img.info{
-    display: block;
-    max-height: 40px;
-}
-
-td{
-    border: 2px solid black;
-}
-
-.btn {
-    font-family: Helvetica;
-    font-size: 16px;
-    border-radius: .25rem;
-    padding: 6px 12px;
-}
-
-    .btn:focus {
-        outline: 2px solid black;
-        box-shadow: none;
-    }
-
-.btnPreNex{
-    color: white;
-    background-color: #0070D2;
-}
-
-    .btnPreNex:hover {
-        text-decoration: underline;
-        color: white;
-    }
-
-.btnToday {
-    color: #6C757D;
-    background-color: white;
-    border: 1px solid #6C757D;
-}
-
-    .btnToday:hover {
-        text-decoration: underline;
-        background-color: #6C757D;
-        color: white;
-    }
-
-
 /*---------------------------------------------*/
 /* Provide sufficient contrast against white background */
 a {
@@ -75,7 +28,7 @@ a {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 @media (min-width: 768px) {
   html {
