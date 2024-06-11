@@ -44,7 +44,7 @@
                         <!-- Boucle sur les jours de la semaine -->
                         @for (int i = 0; i < 7; i++)
                         {
-                            //définition de la classe CSS en fonction du mois courant
+                            //définition de la classe CSS en fonction du mois courant 
                             var cssClass = day.Month == Model.CurrentMonth.Month ? "current-month" : "other-month";
                             //si le jour est aujourd'hui, ajouter la classe 'current-day'
                             if (day.Date == DateTime.Today)
@@ -54,7 +54,7 @@
                             //affichage du jour dans le calendrier avec la classe CSS appropriée
                             if (day.Month == Model.CurrentMonth.Month)
                             {
-                                <td class="current_month @cssClass" onclick="openForm('@day.ToString("yyyy-MM-dd")')"><div>@day.Day</div></td>
+                                <td class="current_month @cssClass" onclick="openForm('@day.ToShortDateString()')"><div>@day.Day</div></td>
                             }
                             else
                             {
@@ -104,11 +104,7 @@
         <script>
             //affiche le formulaire
             function openForm(date) {
-                var formattedDate = new Date(date).toISOString().split('T')[0];
-
-                // Préremplissez les champs de date avec la date sélectionnée
-                document.getElementsByName("StartDate")[0].value = formattedDate;
-                document.getElementsByName("EndDate")[0].value = formattedDate;
+                document.getElementById('selectedDate').value = date;
                 document.getElementById('formModal').style.display = 'block';
             }
 

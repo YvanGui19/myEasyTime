@@ -124,8 +124,8 @@ td {
     position: relative;
 }
 
-/* Le bouton fermer */
-.close-button {
+    /* Le bouton fermer */
+    .close-button {
     color: #aaa;
     float: right;
     font-size: 28px;
