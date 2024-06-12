@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace myeasytime.Models
 {
     public class Conge
     {
+        [JsonIgnore] /*permet d'ignorer CongeID dans le Json*/
         public int CongeID { get; set; }
 
         [Display(Name = "Type")]
